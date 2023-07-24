@@ -1,0 +1,82 @@
+<%- include("./src/navbar") %>
+
+<title>KeyBot | Servers</title>
+
+<div class="text-center text-light" style="padding-top: 65px;">
+    <div class="p-5 text-center" style="padding-top: 110px;">
+        <h1 class="mb-3">Please Select a Server</h1>
+    </div>
+</div>
+
+<div id="continer" class="text-center">
+  <ul class="list-group text-center">
+    <div>
+      <% guilds.forEach(guild => { %>
+        <% if(!guild.permissions.includes('MANAGE_GUILD') || !bot.guilds.cache.get(guild.id)) return %>
+        <li class="list list-group ml-2">
+          <a class="text-light my-2" href="/server/<%= guild.id %>">
+          <% if (guild.iconHash) { %>
+            <img class="rounded-circle float-left ml-3 my-2" width="50px" style="opacity: 1;" src="<%= guild.iconUrl()%>">
+          <% } else { %>
+            <canvas class="rounded-circle float-left ml-3 my-2" style="background-color: #252526;" id="<%=guild.id %>" width="50px" height="50px"></canvas>
+            <script>
+              function createIcone() {
+                const nameAcronym = document.getElementById("<%= guild.id  %>").getContext('2d');
+                let guildName = "<%= guild.name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'')  %>";
+                nameAcronym.font = `15px Arial`;
+                nameAcronym.textAlign = "center";
+                nameAcronym.fillStyle = "#DCDDDE";
+
+                nameAcronym.fillText(guildName, 25, 30);
+              };
+              createIcone();
+            </script>
+          <% } %>
+            <span class="float-left my-4" style="padding-left: 20px; font-size: 15px;"><%= guild.name %></span>
+            <button type="button" class="btn btn-success float-right mr-3 my-3">Go to dashboard</button>
+          </a>
+        </li>
+      <% }) %>
+    </div>
+    <div>
+      <% guilds.forEach(guild => { %>
+        <% if(!guild.permissions.includes('MANAGE_GUILD') || bot.guilds.cache.get(guild.id)) return %>
+        <li class="list list-group ml-2">
+          <a class="text-light my-2" onclick="invite('<%= guild.id%>')">
+          <% if (guild.iconHash) { %>
+            <img class="rounded-circle float-left ml-3 my-2" width="50px" style="opacity: 1;" src="<%= guild.iconUrl() %>">
+          <% } else { %>
+            <canvas class="rounded-circle float-left ml-3 my-2" style="background-color: #252526;" id="<%=guild.id %>" width="50px" height="50px"></canvas>
+            <script>
+              function createIcone() {
+                const nameAcronym = document.getElementById("<%= guild.id  %>").getContext('2d');
+                let guildName = "<%= guild.name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'')  %>";
+                nameAcronym.font = `15px Arial`;
+                nameAcronym.textAlign = "center";
+                nameAcronym.fillStyle = "#DCDDDE";
+
+                nameAcronym.fillText(guildName, 25, 30);
+              };
+              createIcone();
+            </script>
+          <% } %>
+            <span class="float-left my-4" style="padding-left: 20px; font-size: 15px;"><%= guild.name %></span>
+            <button type="button" class="btn btn-danger float-right mr-3 my-3">Setup</button>
+          </a>
+        </li>
+      <% }) %>
+    </div>
+  </ul>
+</div>
+<script>
+  if(screen.width > 992){
+    $("#continer").addClass("container")
+  }
+  $( window ).resize(function() {
+    if(screen.width > 992){
+      $("#continer").addClass("container")
+    }else{  
+      $("#continer").removeClass("container")
+    }
+  });
+</script>

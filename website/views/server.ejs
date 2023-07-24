@@ -1,0 +1,64 @@
+<%- include("./src/navbar") %>
+
+<title>KeyBot | <%= guild.name %></title>
+
+<link rel="stylesheet" href="/css/dashboard.css">
+<div class="text-center text-light" style="padding-top: 70px;">
+  <div class="p-3 text-center" style="padding-top: 70px; background-color: #3B465E;">
+    <a href="/server/<%=guild.id%>" style="all: unset; cursor: pointer;">
+      <% if (icon) { %>
+        <img class="rounded-circle" width="100px" style="opacity: 1;" src="<%= icon %>"> 
+      <% } else { %>
+        <canvas class="rounded-circle" width="100px" height="100px" style="background-color: #36393F;" id="<%= guild.id %>"></canvas>
+        <script>
+          function createIcone() {
+            const nameAcronym = document.getElementById("<%= guild.id  %>").getContext('2d');
+            let guildName = "<%= guild.name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'')  %>";
+            nameAcronym.font = `30px Arial`;
+            nameAcronym.textAlign = "center";
+            nameAcronym.fillStyle = "#DCDDDE";
+
+            nameAcronym.fillText(guildName, 50, 60);
+          };
+          createIcone();
+        </script>
+      <% } %>
+      <br>
+      <br>
+      <h3 class="mb-1" style="display: inline;"><%= guild.name %></h1>
+    </a>
+  </div>
+</div>
+
+<div class="container text-center text-light" style="padding-top: 50px; padding-bottom: 20px;">
+  <h2>Please Select a category</h2>
+  <br>
+  <div class="btn-group-lg">
+    <a href="/server/<%=guild.id%>/moderation" class="button my-2"><i class="fas fa-gavel pr-1 text-light"></i> Moderation</a>
+    <a href="/server/<%=guild.id%>/levels" class="button my-2"><i class="fas fas fa-sort-amount-up pr-1 text-light"></i> Level-System</a>
+    <a href="/server/<%=guild.id%>/names" class="button my-2"><i class="fas fa-file-signature pr-1 text-light"></i> transform-System</a>
+    <a href="/server/<%=guild.id%>/logs" class="button my-2"><i class="fas fa-history pr-1 text-light"></i> Logs</a>
+    <a href="/server/<%=guild.id%>/verification" class="button my-2"><i class="fas fa-user-check pr-1 text-light"></i> Verification</a>
+      <a href="/server/<%=guild.id%>/coins" class="button my-2"><i class="fas fa-coins pr-1 text-light"></i> Coins-System</a>
+    <!-- <a href="/server/<%=guild.id%>/commands" class="button my-2"><i class="fas fa-terminal pr-1 text-light"></i> Commands</a>
+    <a href="/server/<%=guild.id%>/games" class="button my-2"><i class="fas fa-gamepad pr-1 text-light"></i> Games</a>
+    <a href="/server/<%=guild.id%>/images" class="button my-2"><i class="fas fa-image pr-1 text-light"></i> Images</a> -->
+    <% if(premium){ %>
+      <hr class="hr-text" data-content="Premium">
+      <a href="/server/<%=guild.id%>/custom" class="button my-2"><i class="fas fa-terminal pr-1 text-light"></i> Custom-Commands</a>
+    <% } %>
+    <% if(admin){ %>
+      <hr class="hr-text" data-content="Admin">
+      <% if(premium){ %>
+        <form action="/server/<%=guild.id%>/disablepremium" method="POST">
+          <a href="#" onclick="this.parentNode.submit()" class="button my-2"><i class="fas fa-star pr-1 text-light"></i> Disable premium</a>
+        </form>
+      <% }else{ %>
+        <form action="/server/<%=guild.id%>/enablepremium" method="POST">
+          <a href="#" onclick="this.parentNode.submit()" class="button my-2"><i class="fas fa-star pr-1 text-light"></i> Enable premium</a>
+        </form>
+      <% } %>
+    <% } %>
+  </div>
+</div>
+<%- include("./src/footer") %>

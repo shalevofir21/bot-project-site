@@ -1,0 +1,129 @@
+<%- include("../src/navbar") %>
+
+<title>KeyBot | <%= guild.name %></title>
+
+<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+
+<link rel="stylesheet" href="/css/dashboard.css">
+
+<script src="/js/levels.js" defer></script>
+
+<div class="text-center text-light" style="padding-top: 70px; padding-bottom: 5px;">
+  <div class="p-3 text-center" style="padding-top: 70px; background-color: #3B465E;">
+    <a href="/server/<%=guild.id%>" style="all: unset; cursor: pointer;">
+      <% if (icon) { %>
+        <img class="rounded-circle" width="100px" style="opacity: 1;" src="<%= icon %>"> 
+      <% } else { %>
+        <canvas class="rounded-circle" width="100px" height="100px" style="background-color: #36393F;" id="<%=guild.id %>"></canvas>
+        <script>
+          function createIcone() {
+            const nameAcronym = document.getElementById("<%= guild.id  %>").getContext('2d');
+            let guildName = "<%= guild.name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'')  %>";
+            nameAcronym.font = `30px Arial`;
+            nameAcronym.textAlign = "center";
+            nameAcronym.fillStyle = "#DCDDDE";
+
+            nameAcronym.fillText(guildName, 50, 60);
+          };
+          createIcone();
+        </script>
+      <% } %>
+      <br>
+      <br>
+      <h3 class="mb-1" style="display: inline;"><%= guild.name %></h1>
+    </a>
+  </div>
+</div>
+
+<div class="container text-center text-light" style="padding-top: 50px; padding-bottom: 20px;">
+  <form method="post" onchange="changes()">
+    <hr class="hr-text" data-content="Level system mode">
+    <br>
+    <span id="mode-error" name="error" class="text-danger" style="display: none; font-size: 25px;"></span>
+    <div class="list text-light my-1" style="width: 300px; height: 65px; margin: auto;">
+      <span class="float-left my-3" style="padding-left: 20px; font-size: larger;">Level system mode</span>
+      <div class='switch float-right my-3' style="right: 20px;">
+        <label>
+        <% if(xp.ModuleIs === 1){ %>
+          <input id="select-mode" type="checkbox" checked>
+        <% }else{ %>
+          <input id="select-mode" type="checkbox">
+        <% } %>
+        <span class="slider round"></span>
+      </label>
+      </div>
+    </div>
+    <span id="doublexp-error" name="error" class="text-danger" style="display: none; font-size: 25px;"></span>
+    <div class="list text-light my-1" style="width: 300px; height: 65px; margin: auto;">
+      <span class="float-left my-3" style="padding-left: 20px; font-size: larger;">Double xp</span>
+      <div class='switch float-right my-3' style="right: 20px;">
+        <label>
+        <% if(xp.DoubleXp === 1){ %>
+          <input id="select-doublexp" type="checkbox" checked>
+        <% }else{ %>
+          <input id="select-doublexp" type="checkbox">
+        <% } %>
+        <span class="slider round"></span>
+      </label>
+      </div>
+    </div>
+    <hr class="hr-text" data-content="Level system roles">
+    <br>
+    <div id="list">
+      <% if(rlevel && rlevel.RoleReward.length > 0){ %>
+        <% rlevel.RoleReward.filter(r => { %>
+          <div class="list text-dark my-5" style="max-width: 100%; height: auto; margin: auto;">
+            <span id="error" name="error" class="text-danger" style="display: none; font-size: 25px;"></span>
+            <span class="text-light" style="font-size: larger;">Role: </span>
+            <select id="select" class="form-control form-control-sm" multiple>
+              <% bot.guilds.cache.get(guild.id).roles.cache.filter(c => c.position < bot.guilds.cache.get(guild.id).me.roles.highest.position)
+              .filter(c => c.id !== bot.guilds.cache.get(guild.id).roles.everyone.id)
+              .filter(c => c.editable)
+              .forEach(c => { %>
+                <%if(r.roleId === c.id){ %>
+                  <option value="<%= c.id %>" selected>@<%= c.name %></option>
+                <%}else{%>
+                  <option value="<%= c.id %>">@<%= c.name %></option>
+                <%}%>
+              <% }); %>
+            </select>
+            <br><br>
+            <span class="text-light" style="font-size: larger;">Level: </span>
+            <%if(!r.requiredLevel){%>
+              <input type="text" id="level" placeholder="Level" style="font-size:18pt; height:30px; width:60%;">
+            <%}else{%>
+              <input type="text" id="level" placeholder="Level" value="<%=r.requiredLevel%>" style="font-size:18pt; height:30px; width:60%;">
+            <%}%>
+            <br><br>
+            <span class="text-light" style="font-size: larger;">Id: </span>
+            <%if(!r.RewardPass){%>
+              <input type="text" id="id" placeholder="Id" style="font-size:18pt; height:30px; width:60%;">
+            <%}else{%>
+              <input type="text" id="id" placeholder="Id" value="<%=r.RewardPass%>" style="font-size:18pt; height:30px; width:60%;">
+            <%}%>
+            <button class="removebutton mt-4" type="button" onclick="$(this).closest('div').remove();document.querySelector('.save').style.visibility = 'visible'"><i class="fas fa-trash-alt"></i> Remove</button>
+          </div>
+        <% }); %>
+      <% } %>
+    </div>
+    <button onclick="add()" class="plusbutton" type="button">+</button>
+    <br><br>
+    <button class="save btn btn-success mr-2 my-2 float" style="visibility: hidden;"><i class="fas fa-save pr-1 text-light"></i> Save all</button>
+  </form>
+</div>
+<script>
+  function entities(encodedString) {
+    var textArea = document.createElement('textarea');
+    textArea.innerHTML = encodedString;
+    return textArea.value;
+  }
+  let roles = [];
+  '<% bot.guilds.cache.get(guild.id).roles.cache.filter(c => c.position < bot.guilds.cache.get(guild.id).me.roles.highest.position).filter(c => c.id !== bot.guilds.cache.get(guild.id).roles.everyone.id).filter(c => c.editable).forEach(function(c){ %> '
+    roles.push( {id: '<%= c.id%>', text: entities('@<%= c.name%>')})
+  '<% }) %>'
+</script>
+<%- include("../src/footer") %>

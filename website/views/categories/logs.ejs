@@ -1,0 +1,112 @@
+<%- include("../src/navbar") %>
+
+<title>KeyBot | <%= guild.name %></title>
+
+<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+
+<link rel="stylesheet" href="/css/dashboard.css">
+<link rel="stylesheet" href="/css/logs.css">
+
+<script src="/js/logs.js" defer></script>
+
+<div class="text-center text-light" style="padding-top: 70px; padding-bottom: 5px;">
+  <div class="p-3 text-center" style="padding-top: 70px; background-color: #3B465E;">
+    <a href="/server/<%=guild.id%>" style="all: unset; cursor: pointer;">
+      <% if (icon) { %>
+        <img class="rounded-circle" width="100px" style="opacity: 1;" src="<%= icon %>"> 
+      <% } else { %>
+        <canvas class="rounded-circle" width="100px" height="100px" style="background-color: #36393F;" id="<%=guild.id %>"></canvas>
+        <script>
+          function createIcone() {
+            const nameAcronym = document.getElementById("<%= guild.id  %>").getContext('2d');
+            let guildName = "<%= guild.name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'')  %>";
+            nameAcronym.font = `30px Arial`;
+            nameAcronym.textAlign = "center";
+            nameAcronym.fillStyle = "#DCDDDE";
+
+            nameAcronym.fillText(guildName, 50, 60);
+          };
+          createIcone();
+        </script>
+      <% } %>
+      <br>
+      <br>
+      <h3 class="mb-1" style="display: inline;"><%= guild.name %></h1>
+    </a>
+  </div>
+</div>
+
+
+
+<div class="container text-center" style="padding-top: 50px; padding-bottom: 20px;">
+  <div id="list">
+    <div class="list text-light my-1" style="width: auto; height: 65px; margin: auto;">
+      <span class="float-left my-3" style="padding-left: 20px; font-size: larger;">Messages logs</span>
+      <div class='float-right my-3' style="margin-right: 20px;">
+        <button class="btn btn-outline-light" type="button" onclick="om('messages')">Edit</button>
+      </div>
+    </div>
+    <br>
+    <!-- The Modal -->
+    <div id="messages" class="modal">
+      <div class="modal-content">
+        <div class="close" onclick="cm('messages')">×</div>
+        <div class="messages-content" data-1="1" data-2="2"></div>
+      </div>
+    </div>
+  </div>
+  <div id="list">
+    <div class="list text-light my-1" style="width: auto; height: 65px; margin: auto;">
+      <span class="float-left my-3" style="padding-left: 20px; font-size: larger;">Members logs</span>
+      <div class='float-right my-3' style="margin-right: 20px;">
+        <button class="btn btn-outline-light" type="button" onclick="om('members')">Edit</button>
+      </div>
+    </div>
+    <br>
+    <!-- The Modal -->
+    <div id="members" class="modal">
+      <div class="modal-content">
+        <div class="close" onclick="cm('members')">×</div>
+        <div class="members-content" data-3="3" data-4="4" data-5="5"></div>
+      </div>
+    </div>
+  </div>
+  <div id="list">
+    <div class="list text-light my-1" style="width: auto; height: 65px; margin: auto;">
+      <span class="float-left my-3" style="padding-left: 20px; font-size: larger;">Voice logs</span>
+      <div class='float-right my-3' style="margin-right: 20px;">
+        <button class="btn btn-outline-light" type="button" onclick="om('voice')">Edit</button>
+      </div>
+    </div>
+    <br>
+    <!-- The Modal -->
+    <div id="voice" class="modal">
+      <div class="modal-content">
+        <div class="close" onclick="cm('voice')">×</div>
+        <div class="voice-content" data-6="6" data-7="7" data-8="8" data-9="9" data-10="10"></div>
+      </div>
+    </div>
+  </div>
+  <div id="list">
+    <div class="list text-light my-1" style="width: auto; height: 65px; margin: auto;">
+      <span class="float-left my-3" style="padding-left: 20px; font-size: larger;">Server logs</span>
+      <div class='float-right my-3' style="margin-right: 20px;">
+        <button class="btn btn-outline-light" type="button" onclick="om('server')">Edit</button>
+      </div>
+    </div>
+    <br>
+    <!-- The Modal -->
+    <div id="server" class="modal">
+      <div class="modal-content">
+        <div class="close" onclick="cm('server')">×</div>
+        <div class="server-content" data-11="11" data-12="12" data-13="13" data-14="14"></div>
+      </div>
+    </div>
+  </div>
+  <br><br>
+  <button class="save btn btn-success mr-2 my-2 float" style="visibility: hidden;"><i class="fas fa-save pr-1 text-light"></i> Save all</button>
+</div>

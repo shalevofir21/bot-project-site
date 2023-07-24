@@ -1,0 +1,56 @@
+
+
+<%- include("./src/navbar") %>
+
+<title>KeyBot | Stats</title>
+
+<div class="text-center text-light" style="padding-top: 65px; padding-bottom: 20px;">
+  <div class="p-5 text-center" style="padding-top: 110px; background-color: #3B465E;">
+    <h1 class="mb-3">Stats</h1>
+  </div>
+</div>
+
+<div class="container text-center text-light" style="padding-top: 20px; padding-bottom: 20px; font-size: 25px;">
+  <table class="table text-light">
+      <thead class="thead text-center text-light mdb-color lighten-1 lighten-1">
+        </thead>
+        <tbody>
+          <tr class="text-center">
+            <td style="font-size: 20px;"><i class="fas fa-clock"></i> Uptime</td>
+            <td style="font-size: 20px;"><%= uptime %></td>
+          </tr>
+          <tr class="text-center">
+            <td style="font-size: 20px;"><i class="fas fa-table-tennis"></i> Ping</td>
+            <td style="font-size: 20px;"><%= bot.ws.ping || 0 %>ms</td>
+          </tr>
+          <tr class="text-center">
+            <td style="font-size: 20px;"><i class="fas fa-check-circle"></i> Verified</td>
+            <td style="font-size: 20px;"><%= bot.user.verified %></td>
+          </tr>
+          <tr class="text-center">
+              <td style="font-size: 20px;"><i class="fas fa-users"></i> Users</td>
+              <td style="font-size: 20px;"><%= bot.guilds.cache.reduce((acc, value) => acc + value.memberCount, 0) || 0 %> </td>
+            </tr>
+            <tr class="text-center">
+              <td style="font-size: 20px;"><i class="fas fa-server"></i> Servers</td>
+              <td style="font-size: 20px;"><%= bot.guilds.cache.size || 0 %></td>
+            </tr>
+            <tr class="text-center">
+              <td style="font-size: 20px;"><i class="fas fa-hashtag"></i> Channels</td>
+              <td style="font-size: 20px;"><%= bot.channels.cache.size || 0 %> (<%= bot.channels.cache.filter(c => c.type === 'GUILD_TEXT').size %> text, <%= bot.channels.cache.filter(c => c.type === 'GUILD_VOICE').size %> voice, <%= bot.channels.cache.filter(c => c.type === 'GUILD_CATEGORY').size %> categories)</td>
+            </tr>
+            <tr class="text-center">
+              <td style="font-size: 20px;"><i class="fas fa-laugh"></i> Emojis</td>
+              <td style="font-size: 20px;"><%= bot.emojis.cache.size || 0 %> (<%= bot.emojis.cache.filter(e => e.animated === false).size %> normal, <%= bot.emojis.cache.filter(e => e.animated === true).size %> animated)</td>
+            </tr>
+        </tbody>
+    </table>
+  </div>
+
+  
+  <!-- <span><i class="fas fa-clock"></i> Uptime: <%= uptime %></span><br>
+  <span><i class="fas fa-table-tennis"></i> Ping: <%= bot.ws.ping || 0 %>ms</span><br>
+  <span><i class="fas fa-users"></i> Users: <%= bot.users.cache.size || 0 %></span><br>
+  <span><i class="fas fa-server"></i> Servers: <%= bot.guilds.cache.size || 0 %></span><br>
+  <span><i class="fas fa-hashtag"></i> Channels: <%= bot.channels.cache.size || 0 %> (<%= bot.channels.cache.filter(c => c.type === 'text').size %> Text and <%= bot.channels.cache.filter(c => c.type === 'voice').size %> Voice)</span><br>
+  <span><i class="fas fa-laugh"></i> Emojis: <%= bot.emojis.cache.size || 0 %> (<%= bot.emojis.cache.filter(e => e.animated === false).size %> Normal and <%= bot.emojis.cache.filter(e => e.animated === true).size %> Animated)</span><br> -->

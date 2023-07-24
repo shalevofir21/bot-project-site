@@ -1,0 +1,140 @@
+<%- include("../src/navbar") %>
+
+<title>KeyBot | <%= guild.name %></title>
+
+<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<link rel="stylesheet" href="/css/dashboard.css">
+
+<script src="/js/customCommands.js" defer></script>
+
+<div class="text-center text-light" style="padding-top: 70px; padding-bottom: 5px;">
+  <div class="p-3 text-center" style="padding-top: 70px; background-color: #3B465E;">
+    <a href="/server/<%=guild.id%>" style="all: unset; cursor: pointer;">
+      <% if (icon) { %>
+        <img class="rounded-circle" width="100px" style="opacity: 1;" src="<%= icon %>"> 
+      <% } else { %>
+        <canvas class="rounded-circle" width="100px" height="100px" style="background-color: #36393F;" id="<%=guild.id %>"></canvas>
+        <script>
+          function createIcone() {
+            const nameAcronym = document.getElementById("<%= guild.id  %>").getContext('2d');
+            let guildName = "<%= guild.name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'')  %>";
+            nameAcronym.font = `30px Arial`;
+            nameAcronym.textAlign = "center";
+            nameAcronym.fillStyle = "#DCDDDE";
+
+            nameAcronym.fillText(guildName, 50, 60);
+          };
+          createIcone();
+        </script>
+      <% } %>
+      <br>
+      <br>
+      <h3 class="mb-1" style="display: inline;"><%= guild.name %></h3>
+    </a>
+  </div>
+</div>
+
+<div class="container text-light text-center" style="padding-top: 50px; padding-bottom: 20px;">
+  <div id="list">
+    <% if(db.fetch(`customcommands_${guild.id}`)){ %>
+      <% db.get(`customcommands_${guild.id}`).forEach(c => { %>
+        <div id="custom-<%= c.id %>">
+          <div class="list text-light my-1" style="width: auto; height: 65px; margin: auto;">
+            <span class="commandPreview-<%= c.id %> float-left my-3" style="padding-left: 20px; font-size: larger;"><%=  c.command %></span>
+            <div class='switch float-right my-3' onchange="changes()" style="margin-right: 20px;">
+              <label>
+                <% if(db.get(`customcommands_${guild.id}_${c.id}`) && db.get(`customcommands_${guild.id}_${c.id}`) === "true"){ %> 
+                  <input class="enable" name="<%= c.id %>" type="checkbox" checked>
+                <% }else{ %>
+                  <input class="enable" name="<%= c.id %>" type="checkbox">
+                <% } %>
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class='float-right my-3' style="margin-right: 20px;">
+              <button class="btn btn-outline-light" type="button" onclick="om('<%= c.id%>')">Edit</button>
+            </div>
+            <div class='float-right my-3' style="margin-right: 20px;">
+              <button class="btn btn-outline-danger" type="button" onclick="dm('<%= c.id%>')">Delete</button>
+            </div>
+          </div>
+          <br>
+          <!-- The Modal -->
+          <div id=<%= c.id %> class="modal">
+            <div class="modal-content">
+              <div class="close" onclick="cm('<%= c.id%>')">×</div>
+              <span id="error-<%= c.id %>-command" name="error" class="text-danger" style="display: none; font-size: 25px;"></span>
+              <span class="text-light" style="font-size: larger;">Command: </span>
+              <input type="text" id="command-<%= c.id%>" placeholder="Command" value="<%= c.command %>" style="font-size:18pt; height:30px; width:60%;">
+              <br><br>
+              <span id="error-<%= c.id %>-message" name="error" class="text-danger" style="display: none; font-size: 25px;"></span>
+              <span class="text-light" style="font-size: larger;">Message: </span>
+              <br>
+              <!-- <input type="text" id="message" placeholder="Message" value="<%= c.message %>" style="font-size:18pt; height:30px; width:60%;"> -->
+              <textarea id="message-<%= c.id%>" class="message" placeholder="Message" rows="5" cols="90" maxlength="1000"><%= c.message %></textarea>
+              <br><br>
+              <div style="display: inline-block;">
+                <span class="text-light" style="font-size: larger;">Cooldown: </span>
+                <div class='switch' style="top:-20px;">
+                  <label>
+                    <% if(c.cooldown === "true"){ %> 
+                      <input type="checkbox" id="cooldown-<%= c.id%>" checked>
+                    <% }else{ %>
+                      <input type="checkbox" id="cooldown-<%= c.id%>">
+                    <% } %>
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+              <br>
+              <span id="error-<%= c.id %>-time" name="error" class="text-danger" style="display: none; font-size: 25px;"></span>
+              <span class="text-light" style="font-size: larger;">Cooldown time: </span>
+              <select class="form-select" id="hours-<%= c.id%>">
+                <% for (i = 0; i < 25; i++) { %>
+                  <% if(parseInt(c.time.hours) === i){ %>
+                    <option value='<%= i %>' selected><%= i %></option>
+                  <% }else{ %>
+                    <option value='<%= i %>'><%= i %></option>
+                  <% } %>
+                <% } %>
+              </select> Hours&nbsp;&nbsp;
+              <select class="form-select" id="minutes-<%= c.id%>">
+                <% for (i = 0; i < 61; i++) { %>
+                  <% if(parseInt(c.time.minutes) === i){ %>
+                    <option value='<%= i %>' selected><%= i %></option>
+                  <% }else{ %>
+                    <option value='<%= i %>'><%= i %></option>
+                  <% } %>
+                <% } %>
+              </select> Minutes&nbsp;&nbsp;
+              <select class="form-select" id="seconds-<%= c.id%>">
+                <% for (i = 0; i < 61; i++) { %>
+                  <% if(parseInt(c.time.seconds) === i){ %>
+                    <option value='<%= i %>' selected><%= i %></option>
+                  <% }else{ %>
+                    <option value='<%= i %>'><%= i %></option>
+                  <% } %>
+                <% } %>
+              </select> Seconds
+              <br><br>
+              <button onclick="cm('<%= c.id%>')" class="btn btn-secondary">Cancel</button>
+              <button onclick="sm('<%= c.id %>')" class="save-<%= c.id %> btn btn-success">Save</button>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    <% } %>
+  </div>
+  <button onclick="add()" class="plusbutton" type="button">+</button>
+  <br><br>
+  <button class="save btn btn-success mr-2 my-2 float" style="visibility: hidden;"><i class="fas fa-save pr-1 text-light"></i> Save all</button>
+</div>

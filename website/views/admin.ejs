@@ -1,0 +1,100 @@
+<%- include("./src/navbar") %>
+
+<title>KeyBot | Admin page</title>
+
+<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<div class="text-center text-light" style="padding-top: 65px; padding-bottom: 20px;">
+    <div class="p-5 text-center" style="padding-top: 110px;">
+        <h1 class="mb-3">Enter guild id</h1>
+    </div>
+</div>
+
+<div class="container text-center">
+  <class class="text-center">
+    <span id="error" name="error" class="text-danger" style="display: none; font-size: 25px;"></span>
+    <input type="text" placeholder="Guild id" name="input" id="id" required minlength="18" maxlength="18" pattern="\d*"/>
+    <button class="btn btn-outline-success" type="button" onClick="submit()">Go to guild</button>
+  </div>
+</div>
+<hr>
+
+<div class="container" style="padding-bottom: 70px;">
+  <h1 class="mb-4 text-light text-center">Announcements</h1>
+  <a href="/admin/create" class="btn btn-success center">Create new</a>
+  <% if(announcement) announcement.slice().reverse().forEach(ann => { %>
+    <div class="card mt-4">
+      <div class="card-body">
+        <div class="card-text mb-2">Id: <%= ann.id %></div>
+        <h4 class="card-title"><%= ann.text %></h4>
+        <!-- <a href="admin/edit/<%= ann.id %>" class="btn btn-info">Edit</a> -->
+        <form action="/admin/delete/<%= ann.id %>" method="POST" class="d-inline">
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+</div>
+<style>
+  #id {
+    font: inherit;
+    padding: 0.25em 0.5em;
+    border-color: hsl(0, 76%, 50%);
+    outline: none;
+    width: 85%;
+    border-radius: 10px;
+  }
+
+  #id:not(:placeholder-shown) {
+    border-color: hsl(0, 76%, 50%);
+  }
+
+  #id:valid {
+    border-color: hsl(120, 76%, 50%);
+  }
+  .btn:focus{
+    outline: none;
+    box-shadow: none;
+  }
+  .btn:active {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+</style>
+<script>
+  $('body').on('keypress', function(e) {
+    if(e.which !== 13) return;
+    $(".btn").click();
+  });
+
+  function submit(){
+    let value = $("#id").val();
+    if (isNaN(value) || value.length !==  18 || value === ""){
+      $("#error").css("display", "block");
+      $("#error").text("Error: You must enter valid guild id");
+    }else{
+      $("#error").css("display", "none");
+      $.ajax({
+        url: document.URL,
+        type: 'POST', 
+        dataType: 'html',
+        data: {
+          id: $("#id").val()
+        }
+      }).done(function(data){
+        data = JSON.parse(data)
+        if(data.success === false){
+          $("#error").css("display", "block");
+          $("#error").text(data.error);
+        }else{
+          $("#error").removeClass("text-danger").addClass("text-success");
+          $("#error").css("display", "block");
+          $("#error").text("Success");
+          window.location.href= `/server/${value}`
+        }
+      })
+    }
+  }
+</script>

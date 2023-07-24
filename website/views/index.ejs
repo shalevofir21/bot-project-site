@@ -1,0 +1,69 @@
+<%- include("src/navbar") %>
+
+<meta name="google-site-verification" content="-HdX5tvx3ER93-vf25Czt0nkd5xV1L4kVQQg0W5Kx3g" />
+<title>KeyBot | Home</title>
+
+<link rel="stylesheet" href="/css/index.css">
+
+<div id="marquee-cont" style="margin-top: 70px;">
+  <table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="50px" style="background:#1174A8;">
+        <button id="ticker-title">News:</button>
+      </td>
+      <td id="marquee">
+        <marquee onmouseover="this.stop();" onmouseout="this.start();" id='scroll'></marquee>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<div class="container text-center text-light" style="padding-top: 110px;">
+  <% if (user) { %>
+    <img class="img-fluid rounded-circle" src="<%= bot.user.displayAvatarURL({dynamic: true, size: 128}) %>" width="128px" height="auto">
+    <br>
+    <br>
+    <h1>Hello, <%= user.username %>!</h1><br>
+    <p>Welcome to KeyBot dashboard</p>
+    <div class="btn-group-lg">
+      <a href="/servers" type="button" class="btn btn-primary btn-fill"><i class="fas fa-server"></i> Dashboard</a>
+      <button onclick="invite()" class="btn btn-success btn-fill"><i class="fas fa-plus"></i> Invite The Bot</button>
+      <a href="/logout" type="button" class="btn btn-danger btn-fill"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+    </div>
+<% } else { %>
+    <img class="img-fluid rounded-circle" src="<%= bot.user.displayAvatarURL({dynamic: true, size: 128}) %>" width="128px" height="auto">
+    <br>
+    <br>
+    <h1>KeyBot Dashboard</h1>
+    <div class="btn-group-lg">
+      <button onclick="invite()" class="btn btn-success btn-fill"><i class="fas fa-plus"></i> Invite The Bot</button>
+      <button id="login" class="btn btn-primary btn-fill"><i class="fab fa-discord"></i> Login</button>
+    </div>
+  <% } %>
+</div>
+
+<div class="container p-4">
+  <div class="row align-items-center" style="background: #457fca; background: -webkit-linear-gradient(to right, #457fca, #363795); background: linear-gradient(to right, #457fca, #363795);border-radius: 15px;">
+    <div class="col-lg-5 order-lg-2">
+      <div class="p-2">
+        <img class="img-fluid" src="https://cdn.discordapp.com/attachments/742279019508269089/807963261860708402/ezgif.com-gif-maker.gif" alt="">
+      </div>
+    </div>
+    <div class="col-lg-6 order-lg-1">
+      <div class="p-5 text-light">
+        <h3 class="display-5">Transform system</h3>
+        <p>Helps you make your server professional!</p>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function entities(encodedString) {
+    var textArea = document.createElement('textarea');
+    textArea.innerHTML = encodedString;
+    return textArea.value;
+  }
+  
+  $("#scroll").append(entities('<%= announcement %>'))
+</script>
